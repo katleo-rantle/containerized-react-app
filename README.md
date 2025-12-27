@@ -1,73 +1,34 @@
-# React + TypeScript + Vite
+# Containerized React App
+This project demonstrates how to package and optimize a modern React application for production using Docker. It leverages multi-stage builds to create a lightweight, high-performance container that serves static assets via Nginx.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Key Features
+- Multi-Stage Docker Build: Separates the build environment from the production runtime to keep the final image size minimal.
 
-Currently, two official plugins are available:
+- Nginx Integration: Uses Nginx as a production-grade web server to serve the React build folder.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Layer Caching: Optimized Dockerfile instructions to ensure faster subsequent builds by caching dependencies.
 
-## React Compiler
+- Production Ready: A streamlined configuration that removes development overhead and focuses on performance.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
+Prerequisites
+Docker installed on your machine.
 
-## Expanding the ESLint configuration
+Build and Run
+Build the image:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```Bash
+docker build -t react-app-image .
+```
+Run the container:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```Bash
+docker run -p 8080:80 react-app-image
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:8080 in your browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## What I Learnt
+- Building and Shipping: To build and ship a React app from a single Dockerfile, consolidating the entire workflow into a repeatable process.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Multi-Stage Builds: How different base images can be used for different stages of our build & ship process—using a heavy Node.js image for building the app and a lightweight Nginx image for the final production environment.
